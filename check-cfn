@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# cfn-valid
+# helper script for validating CFN stacks
+# usage: cfn-valid <template file>
+#    ex: cfn-valid load-balancer.json
+
+f=$1
+if [[ -z "$f" ]]; then
+  echo "usage: $0 <template file>"
+  exit 1
+fi
+
+if ! command -v cfn-validate-template >/dev/null; then
+  echo "cfn-validate-template not installed (brew install aws-cfn-tools)"
+  exit 1
+fi
+
+access=$(cat ~/.aws/credentials  | head -n 3 | tail -n 2 | grep key_id | awk '{print $3}')
+secret=$(cat ~/.aws/credentials  | head -n 3 | tail -n 2 | grep secret | awk '{print $3}')
+
+if [[ -z "$access" || -z "$secret" ]]; then
+  echo "unable to read access/secret keys from ~/.aws/credentials"
+  exit 1
+fi
+
+echo "Validating: $f"
+exec cfn-validate-template -I $access -S $secret --template-file $f

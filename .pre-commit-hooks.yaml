@@ -1,0 +1,9 @@
+-   id: check-cfn
+    name: Check CFN
+    description: This hook checks json files for parseable syntax.
+    entry: check-cfn
+    language: script
+    types: [json]
+    # for backward compatibility
+    files: ''
+    minimum_pre_commit_version: 0.15.0
