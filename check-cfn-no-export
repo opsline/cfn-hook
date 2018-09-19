@@ -15,5 +15,10 @@ if ! command -v jq >/dev/null; then
 fi
 
 echo "Validating: $f"
-cat $f | jq '.Outputs | .[].Export' | grep Name >/dev/null 2>&1
-exit $?
+match=$(cat $f | jq '.Outputs | .[].Export' | grep Name) #>/dev/null 2>&1
+ret=$?
+if [[ $ret -eq 0 ]]; then
+  echo "Found export: $match"
+  exit 1
+fi
+exit 0
