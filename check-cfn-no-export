@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# cfn-no-export
+# helper script for validating CFN templates don't have any exports
+
+f=$1
+if [[ -z "$f" ]]; then
+  echo "usage: $0 <template file>"
+  exit 1
+fi
+
+if ! command -v jq >/dev/null; then
+  echo "jq not installed (brew install jq)"
+  exit 1
+fi
+
+echo "Validating: $f"
+cat $f | jq '.Outputs | .[].Export' | grep Name >/dev/null 2>&1
+exit $?
